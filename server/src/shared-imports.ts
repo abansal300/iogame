@@ -11,14 +11,19 @@ export const GAME_CONFIG = {
   MAX_FUEL: 150,
   FUEL_DEPLETION_RATE: 0.5,
   SPEED_FUEL_MULTIPLIER: 0.015,
-  MAX_SPEED: 300,
-  ACCELERATION: 200,
-  FRICTION: 0.85,
+  MAX_SPEED: 600, // Doubled from 300
+  MIN_SPEED_AT_LOW_FUEL: 200, // Minimum speed when fuel is low
+  ACCELERATION: 400, // Doubled from 200
+  FRICTION: 0.88,
   ROTATION_SPEED: 3.5,
-  CRAWL_SPEED: 30,
+  CRAWL_SPEED: 50, // Increased from 30
   FUEL_PICKUP_AMOUNT: 40,
   FUEL_PICKUP_SPAWN_INTERVAL: 5000,
   MAX_FUEL_PICKUPS: 15,
+  SPEED_BOOST_AMOUNT: 1.5, // 50% speed boost
+  SPEED_BOOST_DURATION: 5000, // 5 seconds
+  SPEED_BOOST_SPAWN_INTERVAL: 8000, // 8 seconds
+  MAX_SPEED_BOOSTS: 5,
   RAM_FUEL_STEAL_PERCENT: 0.15,
   RAM_COOLDOWN: 1000,
   TICK_RATE: 60,
@@ -40,12 +45,20 @@ export interface PlayerState {
   isAlive: boolean;
   lastRamTime: number;
   color: string;
+  speed: number; // Current speed
+  speedBoostEndTime: number; // When speed boost expires
 }
 
 export interface FuelPickup {
   id: string;
   position: Vector2D;
   amount: number;
+  active: boolean;
+}
+
+export interface SpeedBoost {
+  id: string;
+  position: Vector2D;
   active: boolean;
 }
 
@@ -60,6 +73,7 @@ export interface InputState {
 export interface GameState {
   players: Record<string, PlayerState>;
   fuelPickups: FuelPickup[];
+  speedBoosts: SpeedBoost[];
   matchStartTime: number;
   matchEndTime: number;
   isMatchActive: boolean;

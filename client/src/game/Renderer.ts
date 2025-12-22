@@ -49,6 +49,13 @@ export class Renderer {
       }
     });
 
+    // Draw speed boosts
+    gameState.speedBoosts.forEach((boost) => {
+      if (boost.active) {
+        this.drawSpeedBoost(boost);
+      }
+    });
+
     // Draw all players
     Object.values(gameState.players).forEach((player) => {
       this.drawPlayer(player, player.id === myPlayer?.id);
@@ -214,6 +221,52 @@ export class Renderer {
     this.ctx.fillText('⛽', position.x, position.y);
   }
 
+  private drawSpeedBoost(boost: any): void {
+    const { position } = boost;
+    const size = 30;
+
+    // Rotating glow effect
+    const pulse = Math.sin(Date.now() / 150) * 0.4 + 0.8;
+    const rotation = (Date.now() / 500) % (Math.PI * 2);
+    const glowSize = size * (1 + pulse * 0.6);
+
+    // Glow
+    const gradient = this.ctx.createRadialGradient(
+      position.x,
+      position.y,
+      0,
+      position.x,
+      position.y,
+      glowSize
+    );
+    gradient.addColorStop(0, 'rgba(52, 152, 219, 0.9)');
+    gradient.addColorStop(1, 'rgba(52, 152, 219, 0)');
+    this.ctx.fillStyle = gradient;
+    this.ctx.beginPath();
+    this.ctx.arc(position.x, position.y, glowSize, 0, Math.PI * 2);
+    this.ctx.fill();
+
+    // Main boost (lightning bolt shape)
+    this.ctx.save();
+    this.ctx.translate(position.x, position.y);
+    this.ctx.rotate(rotation);
+
+    // Draw lightning bolt
+    this.ctx.fillStyle = '#3498db';
+    this.ctx.beginPath();
+    this.ctx.arc(0, 0, size, 0, Math.PI * 2);
+    this.ctx.fill();
+
+    // Speed icon (lightning/arrow)
+    this.ctx.fillStyle = '#fff';
+    this.ctx.font = 'bold 24px Arial';
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'middle';
+    this.ctx.fillText('⚡', 0, 0);
+
+    this.ctx.restore();
+  }
+
   private drawMinimap(gameState: GameState, myPlayer: PlayerState): void {
     const minimapSize = 200;
     const minimapPadding = 20;
@@ -240,6 +293,19 @@ export class Renderer {
         const y = minimapY + pickup.position.y * scaleY;
 
         this.ctx.fillStyle = '#f1c40f';
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, 4, 0, Math.PI * 2);
+        this.ctx.fill();
+      }
+    });
+
+    // Draw speed boosts on minimap
+    gameState.speedBoosts.forEach((boost) => {
+      if (boost.active) {
+        const x = minimapX + boost.position.x * scaleX;
+        const y = minimapY + boost.position.y * scaleY;
+
+        this.ctx.fillStyle = '#3498db';
         this.ctx.beginPath();
         this.ctx.arc(x, y, 4, 0, Math.PI * 2);
         this.ctx.fill();

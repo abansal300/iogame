@@ -2,6 +2,7 @@ import { MatchResults, GAME_CONFIG } from '@shared/types';
 
 export class HUD {
   private fuelBar: HTMLElement;
+  private speedEl: HTMLElement;
   private distanceEl: HTMLElement;
   private playerCountEl: HTMLElement;
   private matchTimeEl: HTMLElement;
@@ -11,6 +12,7 @@ export class HUD {
 
   constructor() {
     this.fuelBar = document.getElementById('fuel-bar')!;
+    this.speedEl = document.getElementById('speed')!;
     this.distanceEl = document.getElementById('distance')!;
     this.playerCountEl = document.getElementById('player-count')!;
     this.matchTimeEl = document.getElementById('match-time')!;
@@ -29,6 +31,12 @@ export class HUD {
     } else {
       this.fuelBar.classList.remove('low');
     }
+  }
+
+  public updateSpeed(speed: number): void {
+    // Convert to km/h for display (multiply by ~3.6)
+    const kmh = Math.floor(speed * 3.6);
+    this.speedEl.textContent = `${kmh} km/h`;
   }
 
   public updateDistance(distance: number): void {

@@ -12,6 +12,7 @@ import {
 } from './shared-imports.js';
 import { Player } from './Player.js';
 import { FuelPickupManager } from './FuelPickupManager.js';
+import { SpeedBoostManager } from './SpeedBoostManager.js';
 
 type ClientSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 
@@ -19,6 +20,7 @@ export class GameServer {
   private io: SocketIOServer<ClientToServerEvents, ServerToClientEvents>;
   private players: Map<string, Player> = new Map();
   private fuelPickupManager: FuelPickupManager;
+  private speedBoostManager: SpeedBoostManager;
 
   private gameLoopInterval: NodeJS.Timeout | null = null;
   private lastUpdateTime: number = Date.now();
@@ -31,6 +33,7 @@ export class GameServer {
   constructor(io: SocketIOServer<ClientToServerEvents, ServerToClientEvents>) {
     this.io = io;
     this.fuelPickupManager = new FuelPickupManager();
+    this.speedBoostManager = new SpeedBoostManager();
 
     this.setupSocketHandlers();
     this.startGameLoop();
@@ -92,8 +95,9 @@ export class GameServer {
     this.matchEndTime = this.matchStartTime + GAME_CONFIG.MATCH_DURATION;
     this.hasMatchEnded = false;
 
-    // Spawn initial fuel pickups
+    // Spawn initial fuel pickups and speed boosts
     this.fuelPickupManager.spawnInitialPickups();
+    this.speedBoostManager.spawnInitialBoosts();
 
     // Notify all clients
     this.io.emit('matchStart', this.matchStartTime);
@@ -173,9 +177,13 @@ export class GameServer {
     // Check fuel pickup collections
     this.checkFuelPickupCollisions();
 
-    // Update fuel pickups
+    // Check speed boost collections
+    this.checkSpeedBoostCollisions();
+
+    // Update fuel pickups and speed boosts
     if (this.isMatchActive) {
       this.fuelPickupManager.update(deltaTime);
+      this.speedBoostManager.update(deltaTime);
     }
   }
 
@@ -215,12 +223,23 @@ export class GameServer {
     });
   }
 
+  private checkSpeedBoostCollisions(): void {
+    this.players.forEach((player) => {
+      const collected = this.speedBoostManager.checkCollision(player.getState().position);
+      if (collected) {
+        player.activateSpeedBoost();
+        console.log(`Player ${player.getId()} collected speed boost!`);
+      }
+    });
+  }
+
   private broadcastGameState(): void {
     const state: GameState = {
       players: Object.fromEntries(
         Array.from(this.players.entries()).map(([id, player]) => [id, player.getState()])
       ),
       fuelPickups: this.fuelPickupManager.getPickups(),
+      speedBoosts: this.speedBoostManager.getBoosts(),
       matchStartTime: this.matchStartTime,
       matchEndTime: this.matchEndTime,
       isMatchActive: this.isMatchActive,

@@ -29,6 +29,8 @@ export class Player {
       isAlive: true,
       lastRamTime: 0,
       color,
+      speed: 0,
+      speedBoostEndTime: 0,
     };
   }
 
@@ -72,12 +74,30 @@ export class Player {
     this.state.velocity.x *= GAME_CONFIG.FRICTION;
     this.state.velocity.y *= GAME_CONFIG.FRICTION;
 
-    // Clamp speed
-    const speed = magnitude(this.state.velocity);
-    const maxSpeed = hasFuel ? GAME_CONFIG.MAX_SPEED : GAME_CONFIG.CRAWL_SPEED;
+    // Calculate max speed based on fuel level and speed boost
+    const currentSpeed = magnitude(this.state.velocity);
+    this.state.speed = currentSpeed; // Track current speed
 
-    if (speed > maxSpeed) {
-      const ratio = maxSpeed / speed;
+    // Check if speed boost is active
+    const hasSpeedBoost = Date.now() < this.state.speedBoostEndTime;
+    const speedBoostMultiplier = hasSpeedBoost ? GAME_CONFIG.SPEED_BOOST_AMOUNT : 1;
+
+    // Fuel-based max speed: more fuel = higher max speed
+    let fuelBasedMaxSpeed = GAME_CONFIG.MAX_SPEED;
+    if (hasFuel) {
+      const fuelPercent = this.state.fuel / GAME_CONFIG.MAX_FUEL;
+      // Interpolate between MIN_SPEED and MAX_SPEED based on fuel
+      fuelBasedMaxSpeed = GAME_CONFIG.MIN_SPEED_AT_LOW_FUEL +
+        (GAME_CONFIG.MAX_SPEED - GAME_CONFIG.MIN_SPEED_AT_LOW_FUEL) * fuelPercent;
+    } else {
+      fuelBasedMaxSpeed = GAME_CONFIG.CRAWL_SPEED;
+    }
+
+    // Apply speed boost
+    const maxSpeed = fuelBasedMaxSpeed * speedBoostMultiplier;
+
+    if (currentSpeed > maxSpeed) {
+      const ratio = maxSpeed / currentSpeed;
       this.state.velocity.x *= ratio;
       this.state.velocity.y *= ratio;
     }
@@ -97,7 +117,7 @@ export class Player {
 
     // Deplete fuel based on speed (more speed = more fuel consumption)
     if (this.state.fuel > 0) {
-      const speedFactor = speed / GAME_CONFIG.MAX_SPEED;
+      const speedFactor = currentSpeed / GAME_CONFIG.MAX_SPEED;
       const fuelCost =
         (GAME_CONFIG.FUEL_DEPLETION_RATE +
           speedFactor * GAME_CONFIG.SPEED_FUEL_MULTIPLIER * 100) *
@@ -204,6 +224,11 @@ export class Player {
 
   public getState(): PlayerState {
     return this.state;
+  }
+
+  public activateSpeedBoost(): void {
+    this.state.speedBoostEndTime = Date.now() + GAME_CONFIG.SPEED_BOOST_DURATION;
+    console.log(`Player ${this.state.id} activated speed boost!`);
   }
 
   public getId(): string {

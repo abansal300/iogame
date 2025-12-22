@@ -108,6 +108,7 @@ export class Game {
       const myPlayer = this.gameState.players[this.myPlayerId];
       if (myPlayer) {
         this.hud.updateFuel(myPlayer.fuel);
+        this.hud.updateSpeed(myPlayer.speed);
         this.hud.updateDistance(myPlayer.distance);
       }
     }
