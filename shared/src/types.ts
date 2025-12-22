@@ -6,20 +6,25 @@ export const GAME_CONFIG = {
   CAR_HEIGHT: 60,
   INITIAL_FUEL: 100,
   MAX_FUEL: 150,
-  FUEL_DEPLETION_RATE: 0.5, // Base fuel per second
-  SPEED_FUEL_MULTIPLIER: 0.015, // Extra fuel cost per unit of speed
-  MAX_SPEED: 300,
-  ACCELERATION: 200,
-  FRICTION: 0.85,
+  FUEL_DEPLETION_RATE: 0.5,
+  SPEED_FUEL_MULTIPLIER: 0.015,
+  MAX_SPEED: 600, // Doubled from 300
+  MIN_SPEED_AT_LOW_FUEL: 200, // Minimum speed when fuel is low
+  ACCELERATION: 400, // Doubled from 200
+  FRICTION: 0.88,
   ROTATION_SPEED: 3.5,
-  CRAWL_SPEED: 30, // Speed when out of fuel
+  CRAWL_SPEED: 50, // Increased from 30
   FUEL_PICKUP_AMOUNT: 40,
-  FUEL_PICKUP_SPAWN_INTERVAL: 5000, // 5 seconds
+  FUEL_PICKUP_SPAWN_INTERVAL: 5000,
   MAX_FUEL_PICKUPS: 15,
-  RAM_FUEL_STEAL_PERCENT: 0.15, // Steal 15% of victim's fuel
-  RAM_COOLDOWN: 1000, // 1 second between rams
-  TICK_RATE: 60, // Server updates per second
-  MATCH_DURATION: 180000, // 3 minutes in milliseconds
+  SPEED_BOOST_AMOUNT: 1.5, // 50% speed boost
+  SPEED_BOOST_DURATION: 5000, // 5 seconds
+  SPEED_BOOST_SPAWN_INTERVAL: 8000, // 8 seconds
+  MAX_SPEED_BOOSTS: 5,
+  RAM_FUEL_STEAL_PERCENT: 0.15,
+  RAM_COOLDOWN: 1000,
+  TICK_RATE: 60,
+  MATCH_DURATION: 180000,
 } as const;
 
 // Vector2D for positions and velocities
@@ -39,6 +44,8 @@ export interface PlayerState {
   isAlive: boolean;
   lastRamTime: number;
   color: string; // Hex color for car
+  speed: number; // Current speed
+  speedBoostEndTime: number; // When speed boost expires
 }
 
 // Fuel pickup entity
@@ -46,6 +53,13 @@ export interface FuelPickup {
   id: string;
   position: Vector2D;
   amount: number;
+  active: boolean;
+}
+
+// Speed boost entity
+export interface SpeedBoost {
+  id: string;
+  position: Vector2D;
   active: boolean;
 }
 
@@ -62,6 +76,7 @@ export interface InputState {
 export interface GameState {
   players: Record<string, PlayerState>;
   fuelPickups: FuelPickup[];
+  speedBoosts: SpeedBoost[];
   matchStartTime: number;
   matchEndTime: number;
   isMatchActive: boolean;
