@@ -5,7 +5,7 @@ services:
   # Web Service (combines client + server)
   - type: web
     name: fuel-io
-    env: node
+    runtime: node
     region: oregon
     plan: free
     buildCommand: npm install && npm run build --workspace=client
