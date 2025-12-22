@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fuel.io - Survive the Arena</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #game-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    canvas {
+      border: 3px solid #fff;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      background: #2d2d2d;
+    }
+
+    #hud {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 15px 20px;
+      border-radius: 10px;
+      font-size: 16px;
+      min-width: 200px;
+    }
+
+    #hud h3 {
+      margin-bottom: 10px;
+      color: #4ECDC4;
+      font-size: 18px;
+    }
+
+    #hud .stat {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+    }
+
+    #hud .stat-label {
+      color: #aaa;
+    }
+
+    #hud .stat-value {
+      font-weight: bold;
+      color: white;
+    }
+
+    #fuel-bar-container {
+      margin-top: 10px;
+      background: #444;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #fuel-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #f39c12, #e74c3c);
+      transition: width 0.3s ease;
+      border-radius: 10px;
+    }
+
+    #fuel-bar.low {
+      background: linear-gradient(90deg, #e74c3c, #c0392b);
+      animation: pulse 0.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    #connection-status {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 15px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    #connection-status.connected {
+      color: #2ecc71;
+    }
+
+    #connection-status.disconnected {
+      color: #e74c3c;
+    }
+
+    #waiting-screen, #game-over-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    #waiting-screen h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      background: linear-gradient(45deg, #4ECDC4, #45B7D1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    #waiting-screen p {
+      font-size: 20px;
+      color: #aaa;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #game-over-screen h1 {
+      font-size: 56px;
+      margin-bottom: 30px;
+      color: #f39c12;
+    }
+
+    #rankings {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px 40px;
+      border-radius: 10px;
+      min-width: 400px;
+    }
+
+    #rankings h2 {
+      margin-bottom: 15px;
+      color: #4ECDC4;
+    }
+
+    #rankings .rank-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      margin: 5px 0;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+    }
+
+    #rankings .rank-item.winner {
+      background: rgba(241, 196, 15, 0.3);
+      border: 2px solid #f1c40f;
+    }
+
+    #controls {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    #controls h4 {
+      margin-bottom: 8px;
+      color: #4ECDC4;
+    }
+
+    #controls p {
+      margin: 3px 0;
+      color: #ccc;
+    }
+  </style>
+  <script type="module" crossorigin src="/assets/index-CLERpbKC.js"></script>
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="game-canvas"></canvas>
+
+    <div id="hud">
+      <h3>FUEL.IO</h3>
+      <div class="stat">
+        <span class="stat-label">Distance:</span>
+        <span class="stat-value" id="distance">0 m</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Players:</span>
+        <span class="stat-value" id="player-count">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Time:</span>
+        <span class="stat-value" id="match-time">0:00</span>
+      </div>
+      <div id="fuel-bar-container">
+        <div id="fuel-bar"></div>
+      </div>
+    </div>
+
+    <div id="connection-status" class="disconnected">
+      ⚠ Connecting...
+    </div>
+
+    <div id="controls">
+      <h4>Controls</h4>
+      <p>↑ W - Accelerate</p>
+      <p>↓ S - Brake</p>
+      <p>← A - Turn Left</p>
+      <p>→ D - Turn Right</p>
+    </div>
+
+    <div id="waiting-screen">
+      <h1>FUEL.IO</h1>
+      <p>Waiting for players...</p>
+      <p style="margin-top: 10px; font-size: 16px;">Match starts when 2+ players join</p>
+    </div>
+
+    <div id="game-over-screen" class="hidden">
+      <h1>MATCH OVER</h1>
+      <div id="rankings"></div>
+    </div>
+  </div>
+
+</body>
+</html>
