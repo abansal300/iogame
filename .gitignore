@@ -5,9 +5,13 @@ yarn.lock
 pnpm-lock.yaml
 
 # Build outputs
-dist/
+server/dist/
+shared/dist/
 build/
 *.tsbuildinfo
+
+# Keep client dist for deployment
+!client/dist/
 
 # Environment variables
 .env

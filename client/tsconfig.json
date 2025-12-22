@@ -11,11 +11,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "composite": true,
     "paths": {
       "@shared/*": ["../shared/src/*"]
     }
   },
-  "include": ["src/**/*"],
-  "references": [{ "path": "../shared" }]
+  "include": ["src/**/*", "src/**/*.ts", "src/**/*.tsx"]
 }

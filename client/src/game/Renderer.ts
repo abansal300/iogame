@@ -247,7 +247,7 @@ export class Renderer {
     });
 
     // Draw players
-    Object.values(gameState.players).forEach((player) => {
+    Object.values(gameState.players).forEach((player: PlayerState) => {
       const x = minimapX + player.position.x * scaleX;
       const y = minimapY + player.position.y * scaleY;
 

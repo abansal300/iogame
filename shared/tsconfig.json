@@ -11,7 +11,10 @@
     "declaration": true,
     "declarationMap": true,
     "composite": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "emitDeclarationOnly": false
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
