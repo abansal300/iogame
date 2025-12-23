@@ -425,46 +425,6 @@ for (let i = 0; i < players.length; i++) {
 
 ---
 
-## 🎤 Interview Talking Points
-
-### System Design
-> **"How would you scale this to 10,000 concurrent players?"**
-
-- **Horizontal Scaling:** Multiple game servers with Redis pub/sub for cross-server communication
-- **Sharding:** Hash players to specific servers by region/skill level
-- **Load Balancer:** Nginx with sticky sessions (WebSocket requirement)
-- **Database:** PostgreSQL with read replicas for leaderboards
-- **Caching:** Redis for session management and real-time stats
-
-### Performance
-> **"How do you optimize for low latency?"**
-
-- **Client-Side Prediction:** Client simulates physics locally, reconciles with server
-- **Lag Compensation:** Rewind server state for hit detection
-- **Snapshot Interpolation:** Smooth other players' movement between updates
-- **Delta Compression:** Only send changed state, not full game state
-- **Regional Servers:** Deploy closer to players (AWS regions)
-
-### Testing
-> **"How would you test a real-time multiplayer game?"**
-
-- **Unit Tests:** Physics, collision detection, fuel calculations
-- **Integration Tests:** Server-client communication, state synchronization
-- **Load Tests:** Artillery.io for 1000+ concurrent connections
-- **Chaos Engineering:** Random disconnects, packet loss simulation
-- **E2E Tests:** Playwright for browser automation
-
-### Monitoring
-> **"How do you monitor production?"**
-
-- **Metrics:** Grafana dashboards (player count, tick rate, latency percentiles)
-- **Logging:** Winston with structured JSON logs → ELK stack
-- **Errors:** Sentry for exception tracking
-- **Alerting:** PagerDuty if tick rate drops below 55 Hz or player count spikes
-- **Tracing:** Distributed tracing with OpenTelemetry
-
----
-
 ## 📝 Development Notes
 
 ### Module Resolution Workaround
