@@ -25,9 +25,9 @@
 
 ## 🚀 Live Demo
 
-**Play Now:** [Fuel.io on Render](https://your-app.onrender.com) *(replace with your actual URL)*
+**Play Now:** [Fuel.io on Render](https://fuelio-kb70.onrender.com/)) *(replace with your actual URL)*
 
-> **Note:** First load may take 30-60 seconds (free tier cold start). Need 2+ players to start a match.
+> **Note:** First load may take 30-60 seconds. Need 2+ players to start a match.
 
 ---
 
@@ -493,7 +493,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 Built as a learning project to master:
 - Real-time multiplayer architecture
@@ -503,10 +503,6 @@ Built as a learning project to master:
 - Deployment and DevOps
 
 ---
-
-## 📬 Contact
-
-**Your Name** - [@yourtwitter](https://twitter.com/yourtwitter)
 
 **Project Link:** [https://github.com/yourusername/iogame-1](https://github.com/yourusername/iogame-1)
 
