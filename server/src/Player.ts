@@ -30,7 +30,7 @@ export class Player {
       lastRamTime: 0,
       color,
       speed: 0,
-      speedBoostEndTime: 0,
+      speedBoostCount: 0, // Start with no speed boosts
     };
   }
 
@@ -74,13 +74,9 @@ export class Player {
     this.state.velocity.x *= GAME_CONFIG.FRICTION;
     this.state.velocity.y *= GAME_CONFIG.FRICTION;
 
-    // Calculate max speed based on fuel level and speed boost
+    // Calculate max speed based on fuel level and speed boosts collected
     const currentSpeed = magnitude(this.state.velocity);
     this.state.speed = currentSpeed; // Track current speed
-
-    // Check if speed boost is active
-    const hasSpeedBoost = Date.now() < this.state.speedBoostEndTime;
-    const speedBoostMultiplier = hasSpeedBoost ? GAME_CONFIG.SPEED_BOOST_AMOUNT : 1;
 
     // Fuel-based max speed: more fuel = higher max speed
     let fuelBasedMaxSpeed = GAME_CONFIG.MAX_SPEED;
@@ -93,8 +89,12 @@ export class Player {
       fuelBasedMaxSpeed = GAME_CONFIG.CRAWL_SPEED;
     }
 
-    // Apply speed boost
-    const maxSpeed = fuelBasedMaxSpeed * speedBoostMultiplier;
+    // Add speed from collected boosts (additive, not multiplicative)
+    const speedBoostBonus = this.state.speedBoostCount * GAME_CONFIG.SPEED_BOOST_AMOUNT;
+    let maxSpeed = fuelBasedMaxSpeed + speedBoostBonus;
+
+    // Apply absolute max speed cap
+    maxSpeed = Math.min(maxSpeed, GAME_CONFIG.ABSOLUTE_MAX_SPEED);
 
     if (currentSpeed > maxSpeed) {
       const ratio = maxSpeed / currentSpeed;
@@ -227,8 +227,8 @@ export class Player {
   }
 
   public activateSpeedBoost(): void {
-    this.state.speedBoostEndTime = Date.now() + GAME_CONFIG.SPEED_BOOST_DURATION;
-    console.log(`Player ${this.state.id} activated speed boost!`);
+    this.state.speedBoostCount++;
+    console.log(`Player ${this.state.id} collected speed boost! Total: ${this.state.speedBoostCount}`);
   }
 
   public getId(): string {

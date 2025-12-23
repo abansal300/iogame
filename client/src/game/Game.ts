@@ -109,6 +109,7 @@ export class Game {
       if (myPlayer) {
         this.hud.updateFuel(myPlayer.fuel);
         this.hud.updateSpeed(myPlayer.speed);
+        this.hud.updateBoostCount(myPlayer.speedBoostCount);
         this.hud.updateDistance(myPlayer.distance);
       }
     }

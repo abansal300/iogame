@@ -9,19 +9,20 @@ export const GAME_CONFIG = {
   CAR_HEIGHT: 60,
   INITIAL_FUEL: 100,
   MAX_FUEL: 150,
-  FUEL_DEPLETION_RATE: 0.5,
-  SPEED_FUEL_MULTIPLIER: 0.015,
-  MAX_SPEED: 800, // Increased for faster gameplay
-  MIN_SPEED_AT_LOW_FUEL: 300, // Minimum speed when fuel is low
+  FUEL_DEPLETION_RATE: 2.5, // Increased from 0.5 - fuel runs out much faster
+  SPEED_FUEL_MULTIPLIER: 0.03, // Doubled from 0.015
+  MAX_SPEED: 194, // 700 km/h base speed (194 * 3.6 = 698.4 km/h)
+  ABSOLUTE_MAX_SPEED: 694, // 2500 km/h hard cap (694 * 3.6 = 2498.4 km/h)
+  MIN_SPEED_AT_LOW_FUEL: 83, // 300 km/h minimum (83 * 3.6 = 298.8 km/h)
   ACCELERATION: 1200, // Much higher for quicker acceleration
   FRICTION: 0.96, // Reduced friction (was 0.88) to allow higher speeds
   ROTATION_SPEED: 3.5,
-  CRAWL_SPEED: 50, // Increased from 30
+  CRAWL_SPEED: 14, // 50 km/h crawl speed (14 * 3.6 = 50.4 km/h)
   FUEL_PICKUP_AMOUNT: 40,
   FUEL_PICKUP_SPAWN_INTERVAL: 5000,
   MAX_FUEL_PICKUPS: 15,
-  SPEED_BOOST_AMOUNT: 2.0, // 100% speed boost (2x speed!)
-  SPEED_BOOST_DURATION: 5000, // 5 seconds
+  SPEED_BOOST_AMOUNT: 28, // +100 km/h per boost (28 * 3.6 = 100.8 km/h)
+  SPEED_BOOST_DURATION: 0, // Speed boosts are now permanent (not temporary)
   SPEED_BOOST_SPAWN_INTERVAL: 8000, // 8 seconds
   MAX_SPEED_BOOSTS: 5,
   RAM_FUEL_STEAL_PERCENT: 0.15,
@@ -46,7 +47,7 @@ export interface PlayerState {
   lastRamTime: number;
   color: string;
   speed: number; // Current speed
-  speedBoostEndTime: number; // When speed boost expires
+  speedBoostCount: number; // Number of speed boosts collected (permanent)
 }
 
 export interface FuelPickup {
