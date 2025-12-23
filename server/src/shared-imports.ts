@@ -11,16 +11,16 @@ export const GAME_CONFIG = {
   MAX_FUEL: 150,
   FUEL_DEPLETION_RATE: 0.5,
   SPEED_FUEL_MULTIPLIER: 0.015,
-  MAX_SPEED: 600, // Doubled from 300
-  MIN_SPEED_AT_LOW_FUEL: 200, // Minimum speed when fuel is low
-  ACCELERATION: 400, // Doubled from 200
-  FRICTION: 0.88,
+  MAX_SPEED: 800, // Increased for faster gameplay
+  MIN_SPEED_AT_LOW_FUEL: 300, // Minimum speed when fuel is low
+  ACCELERATION: 1200, // Much higher for quicker acceleration
+  FRICTION: 0.96, // Reduced friction (was 0.88) to allow higher speeds
   ROTATION_SPEED: 3.5,
   CRAWL_SPEED: 50, // Increased from 30
   FUEL_PICKUP_AMOUNT: 40,
   FUEL_PICKUP_SPAWN_INTERVAL: 5000,
   MAX_FUEL_PICKUPS: 15,
-  SPEED_BOOST_AMOUNT: 1.5, // 50% speed boost
+  SPEED_BOOST_AMOUNT: 2.0, // 100% speed boost (2x speed!)
   SPEED_BOOST_DURATION: 5000, // 5 seconds
   SPEED_BOOST_SPAWN_INTERVAL: 8000, // 8 seconds
   MAX_SPEED_BOOSTS: 5,
