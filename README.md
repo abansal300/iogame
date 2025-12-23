@@ -369,42 +369,6 @@ for (let i = 0; i < players.length; i++) {
 | Max Players Tested | 3 concurrent |
 
 ---
-
-## 🐛 Troubleshooting
-
-### "Waiting for players..." stuck on screen
-- Need at least **2 players** connected to start a match
-- Open the game in **two browser windows** to test locally
-
-### Changes not showing after deployment
-- Do a **hard refresh** (Cmd+Shift+R / Ctrl+Shift+F5)
-- Check if Render build completed successfully
-- Verify client `dist/` folder was rebuilt and committed
-
-### Server not starting on Render
-- Check `tsx` is in `dependencies` (not `devDependencies`)
-- Verify build command: `npm install && npm run build --workspace=server`
-- Check Render logs for errors
-
-### Module resolution errors
-- Server uses `shared-imports.ts` workaround for production
-- Ensure both `shared/src/types.ts` and `server/src/shared-imports.ts` are in sync
-  
----
-
-## 📝 Development Notes
-
-### Module Resolution Workaround
-Due to TypeScript ESM/CommonJS module resolution complexity, the server uses `shared-imports.ts` to duplicate shared types. In production, this would be resolved with proper build tooling (Webpack/Rollup).
-
-### Why Not Use a Game Engine?
-- **Learning:** Building from scratch teaches fundamentals
-- **Control:** Full control over every aspect of the game
-- **Simplicity:** No framework overhead for a simple 2D game
-- **Interviews:** Can explain every line of code
-
----
-
 ## Acknowledgments
 
 Built as a learning project to master:
