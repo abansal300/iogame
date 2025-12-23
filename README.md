@@ -25,18 +25,9 @@
 
 ## 🚀 Live Demo
 
-**Play Now:** [Fuel.io on Render](https://fuelio-kb70.onrender.com/)) *(replace with your actual URL)*
+**Play Now:** [Fuel.io on Render](https://fuelio-kb70.onrender.com/))
 
 > **Note:** First load may take 30-60 seconds. Need 2+ players to start a match.
-
----
-
-## 📸 Screenshots
-
-<!-- TODO: Add screenshots -->
-```
-[Main Game View]  [Speed Boost Pickup]  [Match End Screen]
-```
 
 ---
 
